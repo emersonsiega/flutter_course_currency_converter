@@ -23,10 +23,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Map<String, dynamic> moedaBase = Map();
   Map<String, dynamic> moedaConversao = Map();
+  TextEditingController inputController;
+  TextEditingController resultadoController;
 
   @override
   void initState() {
     super.initState();
+
+    inputController = TextEditingController();
+    resultadoController = TextEditingController(text: "0.00");
 
     // Estado inicial do app
     moedaBase = widget._real;
@@ -46,6 +51,13 @@ class _HomeState extends State<Home> {
         moedaConversao = widget._dolar;
       });
     }
+  }
+
+  /// Realiza conversão das moedas
+  void _converter() {
+    double valorBase = double.parse(inputController.text);
+    double valorConvertido = valorBase * widget._valorDolar;
+    resultadoController.text = valorConvertido.toStringAsFixed(2);
   }
 
   @override
@@ -98,6 +110,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
               keyboardType: TextInputType.number,
+              controller: inputController,
             ),
             Icon(
               Icons.swap_vert,
@@ -114,13 +127,15 @@ class _HomeState extends State<Home> {
                 ),
               ),
               enabled: false,
+              controller: resultadoController,
+              textInputAction: TextInputAction.done,
             )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //Converter...
+          _converter();
         },
         child: Icon(Icons.autorenew),
       ),

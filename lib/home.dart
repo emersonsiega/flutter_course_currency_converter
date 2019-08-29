@@ -1,6 +1,53 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  // Cotação atual do Dólar
+  final _valorDolar = 4.20;
+
+  // Dados da moeda Real
+  final _real = {
+    'flag': "🇧🇷",
+    'simbolo': 'R\$',
+  };
+
+  // Dados da moeda Dólar
+  final _dolar = {
+    'flag': "🇺🇸",
+    'simbolo': '\$',
+  };
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Map<String, dynamic> moedaBase = Map();
+  Map<String, dynamic> moedaConversao = Map();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Estado inicial do app
+    moedaBase = widget._real;
+    moedaConversao = widget._dolar;
+  }
+
+  /// Altera a conversão Real x Dolar => Dolar x Real
+  void _alteraMoedaBase() {
+    if (moedaBase == widget._real) {
+      setState(() {
+        moedaBase = widget._dolar;
+        moedaConversao = widget._real;
+      });
+    } else {
+      setState(() {
+        moedaBase = widget._real;
+        moedaConversao = widget._dolar;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +64,7 @@ class Home extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Text(
-                  "🇧🇷",
+                  moedaBase['flag'],
                   style: TextStyle(
                     fontSize: 40,
                   ),
@@ -30,10 +77,11 @@ class Home extends StatelessWidget {
                   iconSize: 40,
                   onPressed: () {
                     // Inverter a conversão
+                    _alteraMoedaBase();
                   },
                 ),
                 Text(
-                  "🇺🇸",
+                  moedaConversao['flag'],
                   style: TextStyle(
                     fontSize: 40,
                   ),
@@ -46,7 +94,7 @@ class Home extends StatelessWidget {
                 labelText: "VALOR",
                 prefix: Padding(
                   padding: const EdgeInsets.only(right: 10.0, left: 5),
-                  child: Text("R\$"),
+                  child: Text(moedaBase['simbolo']),
                 ),
               ),
               keyboardType: TextInputType.number,
@@ -62,7 +110,7 @@ class Home extends StatelessWidget {
                 labelText: "VALOR CONVERTIDO",
                 prefix: Padding(
                   padding: const EdgeInsets.only(right: 10.0, left: 5),
-                  child: Text("\$"),
+                  child: Text(moedaConversao['simbolo']),
                 ),
               ),
               enabled: false,
@@ -71,7 +119,9 @@ class Home extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          //Converter...
+        },
         child: Icon(Icons.autorenew),
       ),
     );

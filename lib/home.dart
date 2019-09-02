@@ -134,6 +134,9 @@ class _HomeState extends State<Home> {
               ),
               keyboardType: TextInputType.number,
               controller: inputController,
+              onChanged: (vl) {
+                _converter();
+              },
             ),
             Icon(
               Icons.swap_vert,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class Home extends StatefulWidget {
   // Cotação atual do Dólar
@@ -25,16 +26,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Map<String, dynamic> moedaBase = Map();
   Map<String, dynamic> moedaConversao = Map();
-  TextEditingController inputController;
-  TextEditingController resultadoController;
+  MoneyMaskedTextController inputController;
+  MoneyMaskedTextController resultadoController;
   Color _backgroundColor;
 
   @override
   void initState() {
     super.initState();
 
-    inputController = TextEditingController();
-    resultadoController = TextEditingController(text: "0.00");
+    inputController = MoneyMaskedTextController(
+      decimalSeparator: ",",
+      thousandSeparator: ".",
+    );
+    resultadoController = MoneyMaskedTextController(
+      decimalSeparator: ",",
+      thousandSeparator: ".",
+      initialValue: 0.0,
+    );
 
     // Estado inicial do app
     moedaBase = widget._real;
@@ -61,7 +69,7 @@ class _HomeState extends State<Home> {
 
   /// Realiza conversão das moedas
   void _converter() {
-    double valorBase = double.parse(inputController.text);
+    double valorBase = inputController.numberValue;
 
     double valorConvertido = 0.0;
 
@@ -71,7 +79,7 @@ class _HomeState extends State<Home> {
       valorConvertido = valorBase * widget._valorDolar;
     }
 
-    resultadoController.text = valorConvertido.toStringAsFixed(2);
+    resultadoController.updateValue(valorConvertido);
   }
 
   @override

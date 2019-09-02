@@ -8,12 +8,14 @@ class Home extends StatefulWidget {
   final _real = {
     'flag': "🇧🇷",
     'simbolo': 'R\$',
+    'color': Colors.green[100],
   };
 
   // Dados da moeda Dólar
   final _dolar = {
     'flag': "🇺🇸",
     'simbolo': '\$',
+    'color': Colors.blue[100],
   };
 
   @override
@@ -25,6 +27,7 @@ class _HomeState extends State<Home> {
   Map<String, dynamic> moedaConversao = Map();
   TextEditingController inputController;
   TextEditingController resultadoController;
+  Color _backgroundColor;
 
   @override
   void initState() {
@@ -36,6 +39,7 @@ class _HomeState extends State<Home> {
     // Estado inicial do app
     moedaBase = widget._real;
     moedaConversao = widget._dolar;
+    _backgroundColor = widget._real['color'];
   }
 
   /// Altera a conversão Real x Dolar => Dolar x Real
@@ -44,11 +48,13 @@ class _HomeState extends State<Home> {
       setState(() {
         moedaBase = widget._dolar;
         moedaConversao = widget._real;
+        _backgroundColor = moedaBase['color'];
       });
     } else {
       setState(() {
         moedaBase = widget._real;
         moedaConversao = widget._dolar;
+        _backgroundColor = moedaBase['color'];
       });
     }
   }
@@ -56,7 +62,15 @@ class _HomeState extends State<Home> {
   /// Realiza conversão das moedas
   void _converter() {
     double valorBase = double.parse(inputController.text);
-    double valorConvertido = valorBase * widget._valorDolar;
+
+    double valorConvertido = 0.0;
+
+    if (moedaBase == widget._real) {
+      valorConvertido = valorBase / widget._valorDolar;
+    } else {
+      valorConvertido = valorBase * widget._valorDolar;
+    }
+
     resultadoController.text = valorConvertido.toStringAsFixed(2);
   }
 
@@ -66,8 +80,9 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text("Currency converter"),
       ),
+      backgroundColor: _backgroundColor,
       body: Container(
-        padding: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 120.0),
+        padding: EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 80.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,7 +93,7 @@ class _HomeState extends State<Home> {
                 Text(
                   moedaBase['flag'],
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 50,
                   ),
                 ),
                 IconButton(
@@ -90,22 +105,22 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     // Inverter a conversão
                     _alteraMoedaBase();
+                    _converter();
                   },
                 ),
                 Text(
                   moedaConversao['flag'],
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 50,
                   ),
                 ),
               ],
             ),
             TextField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: "VALOR",
                 prefix: Padding(
-                  padding: const EdgeInsets.only(right: 10.0, left: 5),
+                  padding: const EdgeInsets.only(right: 10.0),
                   child: Text(moedaBase['simbolo']),
                 ),
               ),
@@ -119,10 +134,9 @@ class _HomeState extends State<Home> {
             ),
             TextField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: "VALOR CONVERTIDO",
                 prefix: Padding(
-                  padding: const EdgeInsets.only(right: 10.0, left: 5),
+                  padding: const EdgeInsets.only(right: 10.0),
                   child: Text(moedaConversao['simbolo']),
                 ),
               ),
@@ -137,7 +151,7 @@ class _HomeState extends State<Home> {
         onPressed: () {
           _converter();
         },
-        child: Icon(Icons.autorenew),
+        child: Icon(Icons.check),
       ),
     );
   }
